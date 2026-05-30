@@ -297,3 +297,187 @@ h1 {
   .dark-cta .hero-actions { flex-direction: column; }
   .dark-cta .btn { width: 100%; }
 }
+
+/* ── PRECIOS ── */
+.pricing-card {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: #fff;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+.pricing-card:hover {
+  box-shadow: 0 20px 50px rgba(15,23,42,.1);
+  transform: translateY(-3px);
+}
+.pricing-featured {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(15,23,42,.22);
+}
+.pricing-badge {
+  display: inline-block;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #64748b;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: .28rem .85rem;
+}
+.badge-white {
+  background: rgba(255,255,255,.15);
+  border-color: rgba(255,255,255,.2);
+  color: rgba(255,255,255,.85);
+}
+.popular-tag {
+  font-size: .78rem;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56,189,248,.12);
+  border-radius: 100px;
+  padding: .28rem .85rem;
+}
+.pricing-price {
+  margin: 1rem 0 .5rem;
+  display: flex;
+  align-items: baseline;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+.pricing-desde {
+  font-size: .88rem;
+  color: #94a3b8;
+}
+.pricing-price strong {
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  color: inherit;
+}
+.pricing-featured .pricing-price strong { color: #fff; }
+.pricing-cop {
+  font-size: .85rem;
+  color: #94a3b8;
+}
+.pricing-desc {
+  font-size: .97rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0;
+}
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+  flex: 1;
+  border-top: 1px solid var(--line);
+  padding-top: 1.4rem;
+}
+.pricing-featured .pricing-features {
+  border-top-color: rgba(255,255,255,.12);
+}
+.pricing-features li {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  font-size: .95rem;
+  color: var(--text);
+}
+.pricing-featured .pricing-features li { color: rgba(255,255,255,.88); }
+.check {
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.pricing-featured .check { color: #38bdf8; }
+.muted {
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+.pricing-btn {
+  width: 100%;
+  margin-top: auto;
+  justify-content: center;
+}
+.pricing-featured .btn-white {
+  background: #fff;
+  color: var(--primary);
+}
+.pricing-featured .btn-white:hover { background: #f1f5f9; }
+
+/* ── ADD-ON MANTENIMIENTO ── */
+.addon-box {
+  margin-top: 2rem;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 20px;
+  padding: 1.6rem 2rem;
+  background: #fff;
+}
+.addon-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.addon-content strong {
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: .4rem;
+}
+.addon-content p {
+  color: var(--muted);
+  font-size: .95rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 600px;
+}
+.addon-price {
+  text-align: center;
+  flex-shrink: 0;
+}
+.addon-price span {
+  display: block;
+  font-size: .82rem;
+  color: #94a3b8;
+}
+.addon-price strong {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+.addon-price small {
+  font-size: .82rem;
+  color: #94a3b8;
+}
+
+/* ── NOTA PRECIOS ── */
+.pricing-note {
+  text-align: center;
+  color: #94a3b8;
+  font-size: .88rem;
+  margin-top: 1.8rem;
+}
+
+@media (max-width: 980px) {
+  .grid-3 .pricing-card { min-width: 0; }
+}
+@media (max-width: 740px) {
+  .pricing-price strong { font-size: 2rem; }
+  .addon-content { flex-direction: column; text-align: center; }
+  .addon-price { width: 100%; }
+}
