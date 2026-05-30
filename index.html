@@ -95,6 +95,7 @@
       </a>
       <nav>
         <a href="#servicios">Servicios</a>
+        <a href="#demo">Demo</a>
         <a href="#portafolio">Portafolio</a>
         <a href="#proceso">Proceso</a>
         <a href="#precios">Precios</a>
@@ -203,6 +204,21 @@
   </section>
 
   <!-- PORTAFOLIO -->
+  <!-- DEMO DASHBOARD -->
+  <section class="section section-alt" id="demo">
+    <div class="container">
+      <div class="section-copy">
+        <span class="section-label">Demo interactivo</span>
+        <h2>Así se ve un dashboard real</h2>
+        <p>Filtra por año, explora los datos y descubre cómo tu empresa podría ver su información. Todos los datos son ficticios.</p>
+      </div>
+      <div class="dashboard-embed">
+        <iframe src="dashboard-demo.html" width="100%" height="640" frameborder="0" loading="lazy" title="Dashboard demo Bidevs"></iframe>
+      </div>
+    </div>
+  </section>
+
+
   <section class="section" id="portafolio">
     <div class="container">
       <div class="section-copy">
@@ -532,11 +548,11 @@
     <div class="container">
       <div class="contacto-grid">
 
-        <!-- Columna izquierda — texto -->
+        <!-- Columna izquierda -->
         <div class="contacto-info">
           <span class="section-label" style="color:#93c5fd;">Contacto</span>
-          <h2 style="color:#fff;">Hablemos de tus datos</h2>
-          <p style="color:#94a3b8;">Cuéntame qué necesitas y te respondo en menos de 24 horas con una propuesta clara.</p>
+          <h2 style="color:#fff; font-size:clamp(1.8rem,3vw,2.6rem); margin:.6rem 0 1rem;">Hablemos de<br>tus datos</h2>
+          <p style="color:#94a3b8; font-size:1.05rem; line-height:1.8; margin-bottom:2rem;">Cuéntame qué necesitas y te respondo en menos de 24 horas con una propuesta clara.</p>
 
           <div class="contacto-items">
             <a href="mailto:julian.rodriguez@bidevs.com" class="contacto-item">
@@ -557,7 +573,7 @@
                 <span>+57 321 493 6179</span>
               </div>
             </a>
-            <a href="https://www.linkedin.com/in/julian-rodriguez-bidevs/" class="contacto-item" target="_blank" rel="noopener">
+            <a href="https://www.linkedin.com/in/julianrodriguezbidevs/" class="contacto-item" target="_blank" rel="noopener">
               <div class="contacto-icon contacto-icon-li">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
               </div>
@@ -567,10 +583,36 @@
               </div>
             </a>
           </div>
+
+          <!-- Garantías -->
+          <div class="contacto-garantias">
+            <div class="garantia-item">
+              <span class="garantia-icon">⚡</span>
+              <span>Respuesta en menos de 24h</span>
+            </div>
+            <div class="garantia-item">
+              <span class="garantia-icon">🎯</span>
+              <span>Diagnóstico inicial gratuito</span>
+            </div>
+            <div class="garantia-item">
+              <span class="garantia-icon">🔒</span>
+              <span>Sin compromiso</span>
+            </div>
+          </div>
         </div>
 
         <!-- Columna derecha — formulario -->
         <div class="contacto-form-wrap">
+          <div class="form-header">
+            <div class="form-header-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <div>
+              <div class="form-header-title">Cuéntame tu proyecto</div>
+              <div class="form-header-sub">Te respondo hoy mismo</div>
+            </div>
+          </div>
+
           <form
             action="https://formspree.io/f/maqkzege"
             method="POST"
@@ -579,20 +621,34 @@
           >
             <div class="form-row">
               <div class="form-group">
-                <label for="nombre">Nombre</label>
+                <label for="nombre">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Nombre
+                </label>
                 <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" required />
               </div>
               <div class="form-group">
-                <label for="empresa">Empresa</label>
+                <label for="empresa">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                  Empresa
+                </label>
                 <input type="text" id="empresa" name="empresa" placeholder="Nombre de tu empresa" />
               </div>
             </div>
+
             <div class="form-group">
-              <label for="email">Correo electrónico</label>
+              <label for="email">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                Correo electrónico
+              </label>
               <input type="email" id="email" name="email" placeholder="tu@empresa.com" required />
             </div>
+
             <div class="form-group">
-              <label for="paquete">¿Qué paquete te interesa?</label>
+              <label for="paquete">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                ¿Qué paquete te interesa?
+              </label>
               <select id="paquete" name="paquete">
                 <option value="">Aún no lo sé / quiero asesoría</option>
                 <option value="starter">Starter — desde $1.5M</option>
@@ -601,15 +657,23 @@
                 <option value="mantenimiento">Solo mantenimiento</option>
               </select>
             </div>
+
             <div class="form-group">
-              <label for="mensaje">¿Qué información manejas hoy y qué quieres mejorar?</label>
-              <textarea id="mensaje" name="mensaje" rows="4" placeholder="Ej: Tenemos ventas en Excel, necesitamos ver el desempeño por vendedor y zona en tiempo real..." required></textarea>
+              <label for="mensaje">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                ¿Qué quieres mejorar?
+              </label>
+              <textarea id="mensaje" name="mensaje" rows="3" placeholder="Ej: Tenemos ventas en Excel y necesitamos ver el desempeño por vendedor en tiempo real..." required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary btn-lg form-submit" id="submitBtn">
+
+            <button type="submit" class="btn-form-submit" id="submitBtn">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               Enviar mensaje
             </button>
+
             <div class="form-success" id="formSuccess">
-              ✓ Mensaje enviado. Te respondo en menos de 24 horas.
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Mensaje enviado. Te respondo en menos de 24 horas.
             </div>
           </form>
         </div>
@@ -640,6 +704,7 @@
       <div class="footer-links">
         <strong>Navegación</strong>
         <a href="#servicios">Servicios</a>
+        <a href="#demo">Demo</a>
         <a href="#portafolio">Portafolio</a>
         <a href="#proceso">Proceso</a>
         <a href="#precios">Precios</a>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard Ventas — Bidevs Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #06090f;
+  --surface:  #0d1117;
+  --card:     #111827;
+  --border:   #1f2937;
+  --border2:  #374151;
+  --text:     #f9fafb;
+  --muted:    #6b7280;
+  --muted2:   #9ca3af;
+  --blue:     #3b82f6;
+  --blue2:    #60a5fa;
+  --cyan:     #06b6d4;
+  --green:    #10b981;
+  --amber:    #f59e0b;
+  --red:      #ef4444;
+  --purple:   #8b5cf6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── HEADER ── */
+.db-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(12px);
+}
+.db-logo{
+  display:flex;align-items:center;gap:10px;
+  font-weight:700;font-size:1.1rem;letter-spacing:-.02em;
+}
+.db-logo svg{width:28px;height:28px}
+.db-title{color:var(--muted2);font-size:.85rem;font-weight:500}
+.db-filters{display:flex;gap:8px;align-items:center}
+.filter-btn{
+  padding:6px 14px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--card);color:var(--text);font-family:inherit;
+  font-size:.82rem;cursor:pointer;transition:.15s;font-weight:500;
+}
+.filter-btn.active,.filter-btn:hover{
+  background:var(--blue);border-color:var(--blue);color:#fff;
+}
+.db-stamp{
+  font-size:.75rem;color:var(--muted);
+  font-family:'DM Mono',monospace;
+}
+
+/* ── LAYOUT ── */
+.db-body{padding:20px 28px;display:grid;gap:16px}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px;position:relative;overflow:hidden;
+  transition:.2s;
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--accent,var(--blue));
+}
+.kpi:hover{border-color:var(--border2);transform:translateY(-1px)}
+.kpi-label{font-size:.78rem;color:var(--muted2);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.kpi-value{font-size:1.9rem;font-weight:700;letter-spacing:-.04em;line-height:1;margin-bottom:8px}
+.kpi-delta{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.8rem;font-weight:600;padding:3px 8px;
+  border-radius:100px;font-family:'DM Mono',monospace;
+}
+.kpi-delta.up{background:rgba(16,185,129,.12);color:#10b981}
+.kpi-delta.dn{background:rgba(239,68,68,.12);color:#ef4444}
+.kpi-delta.neu{background:rgba(59,130,246,.12);color:#60a5fa}
+.kpi-sub{font-size:.75rem;color:var(--muted);margin-top:4px}
+.kpi-spark{position:absolute;bottom:0;right:0;opacity:.15}
+
+/* ── GRID 2-COL ── */
+.row2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* ── PANEL ── */
+.panel{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px;
+}
+.panel-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:18px;
+}
+.panel-title{font-weight:600;font-size:.95rem}
+.panel-badge{
+  font-size:.72rem;padding:3px 10px;border-radius:100px;
+  background:rgba(59,130,246,.1);color:var(--blue2);font-weight:600;
+}
+
+/* ── BAR CHART ── */
+.chart-area{position:relative;height:200px}
+.bars-wrap{
+  display:flex;align-items:flex-end;gap:5px;height:100%;
+  border-bottom:1px solid var(--border);padding-bottom:0;
+}
+.bar-group{flex:1;display:flex;gap:2px;align-items:flex-end;position:relative}
+.bar{
+  flex:1;border-radius:4px 4px 0 0;min-height:2px;
+  transition:opacity .2s;cursor:pointer;position:relative;
+}
+.bar:hover{opacity:.8}
+.bar-tooltip{
+  position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);
+  background:#1f2937;border:1px solid var(--border2);
+  border-radius:8px;padding:6px 10px;font-size:.72rem;
+  white-space:nowrap;pointer-events:none;opacity:0;
+  transition:.15s;z-index:10;font-family:'DM Mono',monospace;
+}
+.bar:hover .bar-tooltip{opacity:1}
+.bar-label{
+  position:absolute;bottom:-18px;left:50%;
+  transform:translateX(-50%);font-size:.62rem;
+  color:var(--muted);white-space:nowrap;font-weight:500;
+}
+.chart-legend{
+  display:flex;gap:16px;margin-bottom:12px;
+}
+.legend-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:.75rem;color:var(--muted2);
+}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* ── DONUT ── */
+.donut-wrap{display:flex;align-items:center;gap:20px}
+.donut-canvas{position:relative;flex-shrink:0}
+.donut-canvas canvas{display:block}
+.donut-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;
+}
+.donut-pct{font-size:1.5rem;font-weight:700;letter-spacing:-.03em}
+.donut-pct-label{font-size:.7rem;color:var(--muted2)}
+.donut-legend{flex:1}
+.donut-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:5px 0;border-bottom:1px solid var(--border);font-size:.78rem;
+}
+.donut-item:last-child{border:none}
+.donut-name{display:flex;align-items:center;gap:8px}
+.donut-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.donut-val{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--muted2)}
+
+/* ── TABLE ── */
+.db-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.db-table th{
+  text-align:left;padding:8px 12px;
+  color:var(--muted);font-weight:600;font-size:.72rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+}
+.db-table td{
+  padding:9px 12px;border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+.db-table tr:last-child td{border:none}
+.db-table tr:hover td{background:rgba(255,255,255,.02)}
+.rank-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:6px;
+  font-size:.72rem;font-weight:700;font-family:'DM Mono',monospace;
+}
+.rank-1{background:rgba(245,158,11,.15);color:#f59e0b}
+.rank-2{background:rgba(156,163,175,.15);color:#9ca3af}
+.rank-3{background:rgba(180,83,9,.15);color:#b45309}
+.rank-n{background:var(--border);color:var(--muted)}
+.progress-wrap{
+  display:flex;align-items:center;gap:8px;
+}
+.progress-bar{
+  flex:1;height:5px;background:var(--border);border-radius:100px;overflow:hidden;
+}
+.progress-fill{height:100%;border-radius:100px;transition:width .6s ease}
+.pct-text{font-family:'DM Mono',monospace;font-size:.75rem;min-width:40px;text-align:right}
+
+/* ── TREND LINE ── */
+.trend-wrap{position:relative;height:80px;margin-top:8px}
+.trend-wrap svg{width:100%;height:100%;overflow:visible}
+
+/* ── WATERFALL KPI ── */
+.wf-list{display:flex;flex-direction:column;gap:8px}
+.wf-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:rgba(255,255,255,.02);
+  border-radius:10px;border:1px solid var(--border);
+}
+.wf-left{display:flex;align-items:center;gap:10px}
+.wf-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:grid;place-items:center;font-size:.9rem;
+}
+.wf-name{font-size:.85rem;font-weight:500}
+.wf-sub{font-size:.72rem;color:var(--muted)}
+.wf-right{text-align:right}
+.wf-val{font-size:.92rem;font-weight:700;font-family:'DM Mono',monospace}
+.wf-chg{font-size:.72rem}
+
+/* ── FOOTER ── */
+.db-footer{
+  text-align:center;padding:14px;
+  font-size:.72rem;color:var(--muted);
+  border-top:1px solid var(--border);margin-top:4px;
+}
+.db-footer a{color:var(--blue2);text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="db-header">
+  <div class="db-logo">
+    <svg viewBox="0 0 44 44" fill="none">
+      <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs>
+      <rect width="44" height="44" rx="10" fill="url(#lg)"/>
+      <rect x="8" y="22" width="7" height="16" rx="2" fill="rgba(255,255,255,.45)"/>
+      <rect x="19" y="14" width="7" height="24" rx="2" fill="rgba(255,255,255,.7)"/>
+      <rect x="30" y="8" width="7" height="30" rx="2" fill="white"/>
+      <circle cx="33.5" cy="6" r="3" fill="#06b6d4"/>
+      <path d="M11.5 20L22.5 12L33.5 6" stroke="#06b6d4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <span>Bidevs</span>
+    <span class="db-title">/ Dashboard Ejecutivo de Ventas</span>
+  </div>
+  <div class="db-filters">
+    <button class="filter-btn" onclick="setYear(2024,this)">2024</button>
+    <button class="filter-btn active" onclick="setYear(2025,this)">2025</button>
+    <button class="filter-btn" onclick="setYear('all',this)">Ambos años</button>
+  </div>
+  <div class="db-stamp" id="stamp">Actualizado: hoy</div>
+</header>
+
+<div class="db-body">
+
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <!-- Ventas mensual + Donut categorías -->
+  <div class="row2">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Ventas vs Presupuesto por Mes</span>
+        <span class="panel-badge" id="cumplBadge">113.9% cumplimiento</span>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Ventas Real</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#374151"></div>Presupuesto</div>
+      </div>
+      <div class="chart-area"><div class="bars-wrap" id="mensualChart"></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Ingresos por Categoría</span>
+        <span class="panel-badge">10 productos</span>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut-canvas" style="width:120px;height:120px">
+          <canvas id="donutCanvas" width="120" height="120"></canvas>
+          <div class="donut-center">
+            <div class="donut-pct" style="color:var(--cyan)">38%</div>
+            <div class="donut-pct-label">Vida</div>
+          </div>
+        </div>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendedores + Tendencia + Zonas -->
+  <div class="row2">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Ranking de Vendedores</span>
+        <span class="panel-badge">10 ejecutivos</span>
+      </div>
+      <table class="db-table" id="vendTable"></table>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">KPIs Operativos</span>
+        <span class="panel-badge">Resumen</span>
+      </div>
+      <div class="wf-list" id="wfList"></div>
+      <div style="margin-top:16px">
+        <div style="font-size:.75rem;color:var(--muted2);margin-bottom:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Tendencia Mensual</div>
+        <div class="trend-wrap"><svg id="trendSvg"></svg></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="db-footer">
+  Dashboard demo creado con datos ficticios · <a href="https://bidevs.net" target="_blank">bidevs.net</a> · ¿Quieres uno así para tu empresa? <a href="https://wa.me/573214936179" target="_blank">Hablemos →</a>
+</div>
+
+<script>
+// ── DATA ──
+const DATA = {
+  meses: ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"],
+  ventas2024: [165e6,142e6,198e6,182e6,208e6,219e6,204e6,213e6,226e6,237e6,256e6,294e6],
+  presup2024: [180e6,160e6,210e6,195e6,220e6,230e6,215e6,225e6,240e6,250e6,270e6,310e6],
+  ventas2025: [201e6,178e6,248e6,224e6,252e6,271e6,246e6,265e6,278e6,290e6,314e6,362e6],
+  presup2025: [195e6,172e6,228e6,215e6,245e6,258e6,238e6,252e6,268e6,278e6,300e6,345e6],
+  vendedores:[
+    {n:"Carlos Mendoza",  r:"Bogotá",   p:320e6, v:378.5e6},
+    {n:"Diana Vargas",    r:"Bogotá",   p:280e6, v:351.2e6},
+    {n:"Daniela Mora",    r:"Bogotá",   p:250e6, v:295.75e6},
+    {n:"Andrés Gómez",    r:"Medellín", p:260e6, v:298.4e6},
+    {n:"Felipe Torres",   r:"Bogotá",   p:300e6, v:315e6},
+    {n:"Valentina Cruz",  r:"Barranquilla",p:210e6,v:241.5e6},
+    {n:"Paola Ríos",      r:"Bogotá",   p:270e6, v:284.6e6},
+    {n:"Ricardo Salinas", r:"Medellín", p:190e6, v:198.2e6},
+    {n:"Cristian Guevara",r:"Pereira",  p:200e6, v:213.1e6},
+    {n:"Juan Herrera",    r:"Cali",     p:220e6, v:209.4e6},
+  ],
+  categorias:[
+    {n:"Seguros Vida",   v:4.18e9, color:"#3b82f6"},
+    {n:"Automóvil",      v:3.11e9, color:"#06b6d4"},
+    {n:"Salud",          v:2.97e9, color:"#10b981"},
+    {n:"Hogar",          v:1.25e9, color:"#8b5cf6"},
+    {n:"Empresas",       v:1.18e9, color:"#f59e0b"},
+    {n:"Personas",       v:0.54e9, color:"#ef4444"},
+  ]
+};
+
+let currentYear = 2025;
+
+function fmt(n){
+  if(n>=1e9) return '$'+(n/1e9).toFixed(1)+'B';
+  if(n>=1e6) return '$'+(n/1e6).toFixed(0)+'M';
+  return '$'+n.toLocaleString('es-CO');
+}
+function fmtPct(n){return (n*100).toFixed(1)+'%'}
+
+function getYearData(y){
+  if(y===2024) return {v:DATA.ventas2024, p:DATA.presup2024};
+  if(y===2025) return {v:DATA.ventas2025, p:DATA.presup2025};
+  return {
+    v:DATA.ventas2024.map((x,i)=>x+DATA.ventas2025[i]),
+    p:DATA.presup2024.map((x,i)=>x+DATA.presup2025[i])
+  };
+}
+
+function setYear(y, btn){
+  currentYear = y;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function renderKPIs(){
+  const {v,p} = getYearData(currentYear);
+  const totalV = v.reduce((a,b)=>a+b,0);
+  const totalP = p.reduce((a,b)=>a+b,0);
+  const cumpl = totalV/totalP;
+  const prev = currentYear===2025?DATA.ventas2024.reduce((a,b)=>a+b,0):
+               currentYear===2024?DATA.ventas2024.reduce((a,b)=>a+b,0)*0.82:
+               (DATA.ventas2024.reduce((a,b)=>a+b,0)+DATA.ventas2025.reduce((a,b)=>a+b,0))*0.88;
+  const crec = (totalV-prev)/prev;
+  const cartera = totalV*0.12;
+
+  const kpis = [
+    {label:"Ventas Totales",     value:fmt(totalV),      delta:"+"+fmtPct(crec),   up:true,  sub:"Acumulado período", accent:"#3b82f6"},
+    {label:"Presupuesto",        value:fmt(totalP),      delta:fmtPct(cumpl)+" cumpl.", up:cumpl>=1, sub:"Objetivo del período", accent:"#8b5cf6"},
+    {label:"Crecimiento",        value:"+"+fmtPct(crec), delta:"vs año anterior", up:true,  sub:"Variación interanual", accent:"#10b981"},
+    {label:"Cartera Pendiente",  value:fmt(cartera),     delta:"12% ventas",      up:false, sub:"Por cobrar", accent:"#f59e0b"},
+  ];
+
+  const row = document.getElementById('kpiRow');
+  row.innerHTML = kpis.map(k=>`
+    <div class="kpi" style="--accent:${k.accent}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <span class="kpi-delta ${k.up?'up':'dn'}">${k.up?'▲':'▼'} ${k.delta}</span>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>
+  `).join('');
+
+  // badge
+  document.getElementById('cumplBadge').textContent = fmtPct(cumpl)+' cumplimiento';
+}
+
+function renderMensual(){
+  const {v,p} = getYearData(currentYear);
+  const maxVal = Math.max(...v,...p);
+  const wrap = document.getElementById('mensualChart');
+  const months = currentYear==='all'?['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']:DATA.meses;
+
+  wrap.innerHTML = months.map((m,i)=>{
+    const vH = (v[i]/maxVal*100).toFixed(1);
+    const pH = (p[i]/maxVal*100).toFixed(1);
+    const color = v[i]>=p[i]?'#3b82f6':'#ef4444';
+    return `<div class="bar-group">
+      <div class="bar" style="height:${pH}%;background:var(--border2)">
+        <div class="bar-tooltip">${m}<br>Presup: ${fmt(p[i])}</div>
+      </div>
+      <div class="bar" style="height:${vH}%;background:${color}">
+        <div class="bar-tooltip">${m}<br>Real: ${fmt(v[i])}</div>
+        <div class="bar-label">${m}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDonut(){
+  const cats = DATA.categorias;
+  const total = cats.reduce((a,c)=>a+c.v,0);
+  const canvas = document.getElementById('donutCanvas');
+  const ctx = canvas.getContext('2d');
+  const cx=60,cy=60,r=48,inner=28;
+  ctx.clearRect(0,0,120,120);
+  let start = -Math.PI/2;
+  cats.forEach(c=>{
+    const angle = (c.v/total)*Math.PI*2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,start,start+angle);
+    ctx.closePath();
+    ctx.fillStyle=c.color;
+    ctx.fill();
+    start+=angle;
+  });
+  // hole
+  ctx.beginPath();
+  ctx.arc(cx,cy,inner,0,Math.PI*2);
+  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--card').trim()||'#111827';
+  ctx.fill();
+
+  const leg = document.getElementById('donutLegend');
+  leg.innerHTML = cats.map(c=>`
+    <div class="donut-item">
+      <div class="donut-name"><div class="donut-dot" style="background:${c.color}"></div>${c.n}</div>
+      <div class="donut-val">${fmtPct(c.v/total)}</div>
+    </div>
+  `).join('');
+}
+
+function renderVendedores(){
+  const sorted = [...DATA.vendedores].sort((a,b)=>b.v-a.v);
+  const maxV = sorted[0].v;
+  const table = document.getElementById('vendTable');
+  table.innerHTML = `<tr><th>#</th><th>Vendedor</th><th>Ciudad</th><th>Ventas</th><th>Cumpl.</th></tr>` +
+    sorted.map((s,i)=>{
+      const cumpl = s.v/s.p;
+      const pct = (s.v/maxV*100).toFixed(0);
+      const rank = i+1;
+      const rc = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'rank-n';
+      const color = cumpl>=1?'var(--green)':cumpl>=.9?'var(--amber)':'var(--red)';
+      return `<tr>
+        <td><span class="rank-badge ${rc}">${rank}</span></td>
+        <td style="font-weight:500">${s.n}</td>
+        <td style="color:var(--muted2)">${s.r}</td>
+        <td style="font-family:'DM Mono',monospace">${fmt(s.v)}</td>
+        <td>
+          <div class="progress-wrap">
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+            <span class="pct-text" style="color:${color}">${fmtPct(cumpl)}</span>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+}
+
+function renderWaterfall(){
+  const {v,p} = getYearData(currentYear);
+  const totalV = v.reduce((a,b)=>a+b,0);
+  const items = [
+    {icon:"📦", name:"Productos activos",     sub:"En portafolio",    val:"10 SKUs",    chg:"+2 vs anterior", up:true,  color:"#3b82f6"},
+    {icon:"👥", name:"Vendedores activos",     sub:"Fuerza comercial", val:"10 ejecutivos",chg:"100% cobertura",up:true,  color:"#10b981"},
+    {icon:"🏙️", name:"Ciudades cubiertas",     sub:"Presencia nacional",val:"5 ciudades", chg:"Bogotá · Med · Cali · Baq · Per",up:true,color:"#8b5cf6"},
+    {icon:"📈", name:"Ticket promedio",        sub:"Por transacción",  val:fmt(totalV/v.length/85),chg:"+8.2% crecimiento",up:true,color:"#f59e0b"},
+  ];
+  document.getElementById('wfList').innerHTML = items.map(it=>`
+    <div class="wf-item">
+      <div class="wf-left">
+        <div class="wf-icon" style="background:${it.color}22">${it.icon}</div>
+        <div><div class="wf-name">${it.name}</div><div class="wf-sub">${it.sub}</div></div>
+      </div>
+      <div class="wf-right">
+        <div class="wf-val" style="color:${it.color}">${it.val}</div>
+        <div class="wf-chg" style="color:var(--muted2)">${it.chg}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTrend(){
+  const {v} = getYearData(currentYear);
+  const svg = document.getElementById('trendSvg');
+  const W=svg.parentElement.offsetWidth||400, H=80;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const min=Math.min(...v), max=Math.max(...v), range=max-min||1;
+  const pts = v.map((val,i)=>{
+    const x = (i/(v.length-1))*W;
+    const y = H - ((val-min)/range)*(H-10) - 5;
+    return `${x},${y}`;
+  });
+  const area = `M${pts[0]} ` + pts.slice(1).map(p=>`L${p}`).join(' ') +
+               ` L${W},${H} L0,${H} Z`;
+  const line = `M${pts[0]} ` + pts.slice(1).map(p=>`L${p}`).join(' ');
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#3b82f6" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="${area}" fill="url(#areaGrad)"/>
+    <path d="${line}" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-linejoin="round"/>
+    ${pts.map((p,i)=>`<circle cx="${p.split(',')[0]}" cy="${p.split(',')[1]}" r="3" fill="#3b82f6"/>`).join('')}
+  `;
+}
+
+function renderAll(){
+  renderKPIs();
+  renderMensual();
+  renderDonut();
+  renderVendedores();
+  renderWaterfall();
+  renderTrend();
+  // timestamp
+  const now = new Date();
+  document.getElementById('stamp').textContent =
+    'Actualizado: ' + now.toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+window.addEventListener('load', renderAll);
+window.addEventListener('resize', ()=>{renderTrend()});
+</script>
+</body>
+</html>
